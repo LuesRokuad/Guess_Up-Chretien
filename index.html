@@ -6,7 +6,7 @@
   <title>Devine Foi — Guess Game Chrétien</title>
   <style>
     :root {
-      --bg1: #080b18;
+      --bg1: #060816;
       --bg2: #14213d;
       --card: rgba(255, 255, 255, 0.12);
       --card2: rgba(255, 255, 255, 0.18);
@@ -39,6 +39,13 @@
       touch-action: none;
     }
 
+    body.playing {
+      background:
+        radial-gradient(circle at left, rgba(87, 204, 153, 0.22), transparent 28%),
+        radial-gradient(circle at right, rgba(255, 209, 102, 0.20), transparent 32%),
+        linear-gradient(135deg, #050713, #111f3d);
+    }
+
     .app {
       width: 100vw;
       height: 100dvh;
@@ -51,9 +58,9 @@
 
     .screen {
       display: none;
-      width: min(100%, 520px);
+      width: min(100%, 560px);
       height: 100%;
-      max-height: 900px;
+      max-height: 920px;
       animation: pop 0.25s ease;
     }
 
@@ -81,8 +88,9 @@
       padding: 10px 14px;
       border-radius: 999px;
       color: var(--muted);
-      font-weight: 800;
+      font-weight: 850;
       backdrop-filter: blur(18px);
+      white-space: nowrap;
     }
 
     .hero {
@@ -121,7 +129,7 @@
 
     .subtitle {
       margin: 0 auto;
-      max-width: 420px;
+      max-width: 460px;
       text-align: center;
       color: var(--muted);
       font-weight: 650;
@@ -208,25 +216,46 @@
       color: #101426;
     }
 
-    .game-top {
+    /* ============================
+       MODE JEU : PAYSAGE / RETOURNÉ
+       ============================ */
+
+    #gameScreen {
+      width: min(100%, 980px);
+      max-width: 980px;
+      max-height: none;
+    }
+
+    .game-layout {
+      flex: 1;
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 14px;
+      grid-template-columns: 140px 1fr 140px;
+      gap: 14px;
+      min-height: 0;
+    }
+
+    .side-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .game-top {
+      display: contents;
     }
 
     .score-box {
       background: var(--card);
       border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 20px;
-      padding: 10px;
+      border-radius: 24px;
+      padding: 12px;
       text-align: center;
       backdrop-filter: blur(18px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.22);
     }
 
     .score-num {
-      font-size: 24px;
+      font-size: 34px;
       font-weight: 1000;
       line-height: 1;
     }
@@ -234,27 +263,30 @@
     .score-label {
       color: var(--muted);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 850;
     }
 
     .timer {
-      width: 88px;
-      height: 88px;
+      width: 112px;
+      height: 112px;
       border-radius: 50%;
       display: grid;
       place-items: center;
-      font-size: 30px;
+      font-size: 38px;
       font-weight: 1000;
       background:
         conic-gradient(var(--gold) var(--progress, 100%), rgba(255,255,255,0.14) 0);
       box-shadow: 0 18px 40px rgba(0,0,0,0.35);
       position: relative;
+      align-self: center;
+      justify-self: center;
+      flex-shrink: 0;
     }
 
     .timer::before {
       content: "";
       position: absolute;
-      inset: 8px;
+      inset: 9px;
       border-radius: 50%;
       background: #10172d;
     }
@@ -269,16 +301,18 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 16px;
+      gap: 12px;
+      min-width: 0;
     }
 
     .word-card {
-      min-height: 45dvh;
+      height: 100%;
+      min-height: 0;
       border-radius: 36px;
       display: grid;
       place-items: center;
       text-align: center;
-      padding: 24px;
+      padding: 18px;
       background:
         linear-gradient(135deg, rgba(76,201,240,0.25), rgba(255,209,102,0.18)),
         rgba(255,255,255,0.12);
@@ -286,6 +320,24 @@
       box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
+    }
+
+    .word-card.good-flash {
+      animation: goodFlash 0.28s ease;
+    }
+
+    .word-card.bad-flash {
+      animation: badFlash 0.28s ease;
+    }
+
+    @keyframes goodFlash {
+      0% { background-color: rgba(87, 204, 153, 0.40); transform: scale(0.98); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes badFlash {
+      0% { background-color: rgba(255, 92, 122, 0.40); transform: scale(0.98); }
+      100% { transform: scale(1); }
     }
 
     .word-card::before {
@@ -313,15 +365,15 @@
       font-weight: 1000;
       letter-spacing: 1px;
       text-transform: uppercase;
-      font-size: 13px;
+      font-size: 14px;
       margin-bottom: 14px;
     }
 
     .word {
-      font-size: clamp(42px, 12vw, 78px);
-      line-height: 0.95;
+      font-size: clamp(46px, 11vw, 96px);
+      line-height: 0.9;
       font-weight: 1000;
-      letter-spacing: -2px;
+      letter-spacing: -3px;
       text-wrap: balance;
       text-shadow: 0 10px 35px rgba(0,0,0,0.30);
     }
@@ -329,14 +381,14 @@
     .hint {
       margin-top: 18px;
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 800;
       font-size: 14px;
     }
 
     .actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: 1fr;
+      gap: 10px;
     }
 
     .big-btn, .small-btn {
@@ -349,14 +401,15 @@
     }
 
     .big-btn {
-      min-height: 76px;
-      font-size: 22px;
+      min-height: 70px;
+      font-size: 19px;
+      padding: 10px;
     }
 
     .small-btn {
       min-height: 50px;
-      padding: 0 16px;
-      font-size: 14px;
+      padding: 0 14px;
+      font-size: 13px;
       background: rgba(255,255,255,0.12);
       border: 1px solid rgba(255,255,255,0.18);
     }
@@ -442,7 +495,7 @@
       z-index: 20;
       padding: 13px 18px;
       border-radius: 999px;
-      background: rgba(0,0,0,0.55);
+      background: rgba(0,0,0,0.60);
       border: 1px solid rgba(255,255,255,0.18);
       backdrop-filter: blur(18px);
       font-weight: 900;
@@ -461,9 +514,9 @@
       display: none;
       place-items: center;
       z-index: 50;
-      background: rgba(2, 6, 23, 0.78);
+      background: rgba(2, 6, 23, 0.80);
       backdrop-filter: blur(14px);
-      font-size: 26vw;
+      font-size: 20vw;
       font-weight: 1000;
       color: var(--gold);
       text-shadow: 0 0 50px rgba(255,209,102,0.35);
@@ -481,12 +534,148 @@
       padding-bottom: env(safe-area-inset-bottom);
     }
 
-    @media (max-height: 720px) {
-      .logo { width: 64px; height: 64px; font-size: 34px; }
-      h1 { font-size: 44px; }
-      .word-card { min-height: 38dvh; }
-      .big-btn { min-height: 62px; }
-      .category-grid { max-height: 42dvh; }
+    .rotate-warning {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      place-items: center;
+      text-align: center;
+      padding: 24px;
+      background: rgba(5, 7, 19, 0.94);
+      backdrop-filter: blur(16px);
+    }
+
+    .rotate-warning-card {
+      max-width: 420px;
+      padding: 22px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: var(--shadow);
+    }
+
+    .rotate-icon {
+      font-size: 72px;
+      margin-bottom: 10px;
+    }
+
+    .rotate-warning h2 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .rotate-warning p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    @media (orientation: portrait) and (max-width: 760px) {
+      body.playing .rotate-warning {
+        display: grid;
+      }
+    }
+
+    @media (orientation: landscape) {
+      .app {
+        padding: 14px calc(14px + env(safe-area-inset-right)) 14px calc(14px + env(safe-area-inset-left));
+      }
+
+      #homeScreen, #resultScreen {
+        width: min(100%, 860px);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 0.82fr 1.18fr;
+        align-items: center;
+      }
+
+      .category-grid {
+        grid-template-columns: 1fr 1fr;
+        max-height: 58dvh;
+      }
+
+      h1 {
+        font-size: clamp(42px, 7vw, 72px);
+      }
+
+      .subtitle {
+        font-size: 15px;
+      }
+    }
+
+    @media (max-width: 760px) and (orientation: landscape) {
+      .game-layout {
+        grid-template-columns: 110px 1fr 110px;
+        gap: 10px;
+      }
+
+      .timer {
+        width: 86px;
+        height: 86px;
+        font-size: 28px;
+      }
+
+      .score-num {
+        font-size: 24px;
+      }
+
+      .score-label {
+        font-size: 10px;
+      }
+
+      .big-btn {
+        min-height: 54px;
+        font-size: 15px;
+        border-radius: 18px;
+      }
+
+      .small-btn {
+        min-height: 42px;
+        font-size: 12px;
+        border-radius: 18px;
+      }
+
+      .word {
+        font-size: clamp(36px, 10vw, 70px);
+        letter-spacing: -2px;
+      }
+
+      .word-card {
+        border-radius: 28px;
+      }
+
+      .category-name,
+      .hint {
+        font-size: 11px;
+      }
+    }
+
+    @media (max-height: 440px) and (orientation: landscape) {
+      .timer {
+        width: 78px;
+        height: 78px;
+        font-size: 25px;
+      }
+
+      .big-btn {
+        min-height: 46px;
+      }
+
+      .small-btn {
+        min-height: 36px;
+      }
+
+      .word {
+        font-size: clamp(34px, 9vw, 62px);
+      }
+
+      .hint {
+        margin-top: 10px;
+      }
     }
   </style>
 </head>
@@ -496,7 +685,7 @@
     <section class="screen active" id="homeScreen">
       <div class="topbar">
         <div class="pill">✝️ Version chrétienne</div>
-        <div class="pill">📱 Mobile first</div>
+        <div class="pill">📱 Paysage auto</div>
       </div>
 
       <div class="hero">
@@ -504,8 +693,8 @@
           <div class="logo">🕊️</div>
           <h1>Devine <span>Foi</span></h1>
           <p class="subtitle">
-            Mets le téléphone sur ton front. Tes potes te font deviner le mot.
-            Swipe, clique ou incline pour marquer les points. Là on révise la Bible en mode jeu, pas en contrôle surprise.
+            Choisis une catégorie, le téléphone se met en mode paysage, puis pose-le sur ton front.
+            Tes potes voient le mot, toi tu inclines le téléphone : vers le haut si c’est trouvé, vers le bas pour passer.
           </p>
         </div>
 
@@ -524,45 +713,45 @@
         </div>
       </div>
 
-      <p class="footer-help">Astuce : swipe vers la droite = trouvé, swipe vers la gauche = passe.</p>
+      <p class="footer-help">Sur certains téléphones, le navigateur demande une autorisation pour l’inclinaison.</p>
     </section>
 
     <!-- ÉCRAN JEU -->
     <section class="screen" id="gameScreen">
-      <div class="game-top">
-        <div class="score-box">
-          <div class="score-num" id="goodScore">0</div>
-          <div class="score-label">TROUVÉS</div>
-        </div>
+      <div class="game-layout">
+        <aside class="side-panel">
+          <div class="score-box">
+            <div class="score-num" id="goodScore">0</div>
+            <div class="score-label">TROUVÉS</div>
+          </div>
 
-        <div class="timer" id="timerCircle">
-          <span id="timeLeft">60</span>
-        </div>
+          <button class="big-btn ok" id="correctBtn">✅ Trouvé</button>
+          <button class="small-btn ghost" id="calibrateBtn">🎯 Recalibrer</button>
+        </aside>
 
-        <div class="score-box">
-          <div class="score-num" id="passScore">0</div>
-          <div class="score-label">PASSÉS</div>
-        </div>
-      </div>
-
-      <div class="word-zone" id="touchZone">
-        <div class="word-card">
-          <div class="word-content">
-            <div class="category-name" id="activeCategory">Catégorie</div>
-            <div class="word" id="currentWord">Prêt ?</div>
-            <div class="hint" id="hintText">Swipe droite ✅ / swipe gauche ⏭️</div>
+        <div class="word-zone" id="touchZone">
+          <div class="word-card" id="wordCard">
+            <div class="word-content">
+              <div class="category-name" id="activeCategory">Catégorie</div>
+              <div class="word" id="currentWord">Prêt ?</div>
+              <div class="hint" id="hintText">Incline vers le haut ✅ / vers le bas ⏭️</div>
+            </div>
           </div>
         </div>
 
-        <div class="actions">
-          <button class="big-btn pass" id="passBtn">⏭️ Passe</button>
-          <button class="big-btn ok" id="correctBtn">✅ Trouvé</button>
-        </div>
+        <aside class="side-panel">
+          <div class="timer" id="timerCircle">
+            <span id="timeLeft">60</span>
+          </div>
 
-        <div class="actions">
-          <button class="small-btn ghost" id="tiltBtn">📲 Activer inclinaison</button>
+          <div class="score-box">
+            <div class="score-num" id="passScore">0</div>
+            <div class="score-label">PASSÉS</div>
+          </div>
+
+          <button class="big-btn pass" id="passBtn">⏭️ Passe</button>
           <button class="small-btn ghost" id="stopBtn">⏹️ Stop</button>
-        </div>
+        </aside>
       </div>
     </section>
 
@@ -579,7 +768,7 @@
           <div class="history" id="historyList"></div>
         </div>
 
-        <div class="actions">
+        <div class="actions" style="grid-template-columns: 1fr 1fr;">
           <button class="big-btn blue" id="againBtn">🔁 Rejouer</button>
           <button class="big-btn gold" id="homeBtn">🏠 Menu</button>
         </div>
@@ -587,13 +776,25 @@
     </section>
   </main>
 
+  <div class="rotate-warning" id="rotateWarning">
+    <div class="rotate-warning-card">
+      <div class="rotate-icon">📱↔️</div>
+      <h2>Tourne le téléphone</h2>
+      <p>
+        Le jeu essaye de passer en paysage automatiquement.
+        Si ton navigateur bloque, tourne juste ton téléphone en horizontal et c’est carré.
+      </p>
+    </div>
+  </div>
+
   <div class="toast" id="toast">Message</div>
   <div class="countdown" id="countdown">3</div>
 
   <script>
     // =====================================================
-    // DEVINE FOI — JEU TYPE GUESS UP, VERSION CHRÉTIENNE
-    // Tout est dans un seul fichier : HTML + CSS + JS.
+    // DEVINE FOI — VERSION TÉLÉPHONE RETOURNÉ / PAYSAGE
+    // Trouvé = incliner vers le haut
+    // Passe = incliner vers le bas
     // =====================================================
 
     const categories = {
@@ -658,7 +859,6 @@
       }
     };
 
-    // Tu peux changer ces phrases si tu veux un autre style.
     const resultMessages = [
       { min: 0, title: "Échauffement spirituel 😭", text: "Tranquille, même Pierre a eu des moments compliqués." },
       { min: 4, title: "Pas mal du tout 👀", text: "La team commence à lire entre les lignes." },
@@ -682,11 +882,12 @@
     const activeCategoryEl = document.getElementById("activeCategory");
     const currentWordEl = document.getElementById("currentWord");
     const hintText = document.getElementById("hintText");
+    const wordCard = document.getElementById("wordCard");
     const touchZone = document.getElementById("touchZone");
     const correctBtn = document.getElementById("correctBtn");
     const passBtn = document.getElementById("passBtn");
     const stopBtn = document.getElementById("stopBtn");
-    const tiltBtn = document.getElementById("tiltBtn");
+    const calibrateBtn = document.getElementById("calibrateBtn");
     const finalScoreEl = document.getElementById("finalScore");
     const resultTitleEl = document.getElementById("resultTitle");
     const resultTextEl = document.getElementById("resultText");
@@ -707,10 +908,21 @@
     let timerInterval = null;
     let gameActive = false;
     let lockAction = false;
-    let lastTiltAction = 0;
-    let tiltEnabled = false;
     let touchStartX = 0;
     let touchStartY = 0;
+
+    // Inclinaison
+    let tiltEnabled = false;
+    let lastTiltAction = 0;
+    let baseBeta = null;
+    let lastBeta = null;
+    let stableFrames = 0;
+
+    // Réglages de sensibilité.
+    // Si c'est trop sensible, augmente 28 à 35.
+    // Si ça ne détecte pas assez, baisse 28 à 20.
+    const TILT_THRESHOLD = 28;
+    const TILT_COOLDOWN = 950;
 
     function showScreen(name) {
       Object.values(screens).forEach(screen => screen.classList.remove("active"));
@@ -742,9 +954,7 @@
         gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.16);
         osc.start();
         osc.stop(ctx.currentTime + 0.18);
-      } catch (e) {
-        // Si le son est bloqué, le jeu continue sans souci.
-      }
+      } catch (e) {}
     }
 
     function shuffle(array) {
@@ -770,13 +980,130 @@
           <div class="cat-emoji">${data.emoji}</div>
         `;
 
-        btn.addEventListener("click", () => {
+        btn.addEventListener("click", async () => {
           selectedCategoryName = name;
+
+          // Important : ces demandes doivent être lancées après un clic utilisateur.
+          await requestLandscapeAndFullscreen();
+          await enableTiltAuto();
+
           startCountdown();
         });
 
         categoryGrid.appendChild(btn);
       });
+    }
+
+    async function requestLandscapeAndFullscreen() {
+      try {
+        if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen();
+        }
+      } catch (e) {
+        // Certains navigateurs refusent le plein écran depuis un fichier local.
+      }
+
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          await screen.orientation.lock("landscape");
+          showToast("Mode paysage activé 📱");
+        } else {
+          showToast("Tourne ton tel en paysage 📱");
+        }
+      } catch (e) {
+        showToast("Tourne ton tel en paysage 📱");
+      }
+    }
+
+    async function exitLandscapeIfPossible() {
+      try {
+        if (screen.orientation && screen.orientation.unlock) {
+          screen.orientation.unlock();
+        }
+      } catch (e) {}
+
+      try {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          await document.exitFullscreen();
+        }
+      } catch (e) {}
+    }
+
+    async function enableTiltAuto() {
+      if (tiltEnabled) return true;
+
+      try {
+        if (typeof DeviceOrientationEvent !== "undefined" &&
+            typeof DeviceOrientationEvent.requestPermission === "function") {
+          const permission = await DeviceOrientationEvent.requestPermission();
+
+          if (permission !== "granted") {
+            showToast("Inclinaison refusée");
+            return false;
+          }
+        }
+
+        window.addEventListener("deviceorientation", handleTilt);
+        tiltEnabled = true;
+        showToast("Inclinaison activée ✅");
+        return true;
+      } catch (error) {
+        showToast("Inclinaison non dispo");
+        return false;
+      }
+    }
+
+    function calibrateTilt() {
+      baseBeta = lastBeta;
+      stableFrames = 0;
+      showToast("Recalibré 🎯");
+      vibrate(35);
+    }
+
+    function handleTilt(event) {
+      if (!gameActive || !tiltEnabled) return;
+
+      const beta = event.beta;
+      if (beta === null || beta === undefined) return;
+
+      lastBeta = beta;
+
+      // Calibration automatique au début de la partie.
+      // Le téléphone devient la position neutre au moment où la partie commence.
+      if (baseBeta === null) {
+        baseBeta = beta;
+        return;
+      }
+
+      const now = Date.now();
+      if (now - lastTiltAction < TILT_COOLDOWN) return;
+
+      const difference = beta - baseBeta;
+
+      // Anti-déclenchement accidentel : il faut 2 petits frames stables.
+      if (Math.abs(difference) < TILT_THRESHOLD) {
+        stableFrames = 0;
+        return;
+      }
+
+      stableFrames++;
+      if (stableFrames < 2) return;
+
+      // En mode paysage/front :
+      // vers le haut = beta diminue souvent
+      // vers le bas = beta augmente souvent
+      if (difference < -TILT_THRESHOLD) {
+        lastTiltAction = now;
+        stableFrames = 0;
+        handleAction("good");
+        return;
+      }
+
+      if (difference > TILT_THRESHOLD) {
+        lastTiltAction = now;
+        stableFrames = 0;
+        handleAction("bad");
+      }
     }
 
     function startCountdown() {
@@ -785,6 +1112,7 @@
 
       countdown.textContent = count;
       countdown.classList.add("show");
+      document.body.classList.add("playing");
 
       const countInterval = setInterval(() => {
         count--;
@@ -810,13 +1138,15 @@
       timeLeft = duration;
       gameActive = true;
       lockAction = false;
+      baseBeta = lastBeta;
+      stableFrames = 0;
 
       deck = shuffle(categories[selectedCategoryName].words);
       updateScore();
       updateTimer();
 
       activeCategoryEl.textContent = selectedCategoryName;
-      hintText.textContent = "Swipe droite ✅ / swipe gauche ⏭️";
+      hintText.textContent = "Incline vers le haut ✅ / vers le bas ⏭️";
 
       showScreen("game");
       nextWord();
@@ -856,6 +1186,12 @@
       currentWordEl.textContent = currentWord;
     }
 
+    function flashCard(type) {
+      wordCard.classList.remove("good-flash", "bad-flash");
+      void wordCard.offsetWidth;
+      wordCard.classList.add(type === "good" ? "good-flash" : "bad-flash");
+    }
+
     function handleAction(type) {
       if (!gameActive || lockAction) return;
 
@@ -867,26 +1203,32 @@
         showToast("✅ Trouvé !");
         beep("good");
         vibrate(35);
+        flashCard("good");
       } else {
         passed++;
         history.push({ word: currentWord, type: "bad" });
         showToast("⏭️ Passé");
         beep("bad");
         vibrate([25, 40, 25]);
+        flashCard("bad");
       }
 
       updateScore();
       nextWord();
 
+      // Nouvelle position neutre après chaque action, comme ça il ne spam pas.
       setTimeout(() => {
+        baseBeta = lastBeta;
+        stableFrames = 0;
         lockAction = false;
-      }, 280);
+      }, 420);
     }
 
-    function endGame() {
+    async function endGame() {
       if (!gameActive) return;
 
       gameActive = false;
+      document.body.classList.remove("playing");
       clearInterval(timerInterval);
       timerInterval = null;
 
@@ -919,56 +1261,7 @@
       showScreen("result");
     }
 
-    async function enableTilt() {
-      if (tiltEnabled) {
-        showToast("Inclinaison déjà active 📲");
-        return;
-      }
-
-      try {
-        if (typeof DeviceOrientationEvent !== "undefined" &&
-            typeof DeviceOrientationEvent.requestPermission === "function") {
-          const permission = await DeviceOrientationEvent.requestPermission();
-
-          if (permission !== "granted") {
-            showToast("Permission refusée");
-            return;
-          }
-        }
-
-        window.addEventListener("deviceorientation", handleTilt);
-        tiltEnabled = true;
-        tiltBtn.textContent = "📲 Inclinaison active";
-        hintText.textContent = "Incline en haut = trouvé / en bas = passe";
-        showToast("Inclinaison activée ✅");
-      } catch (error) {
-        showToast("Inclinaison non disponible");
-      }
-    }
-
-    function handleTilt(event) {
-      if (!gameActive || !tiltEnabled) return;
-
-      const now = Date.now();
-      if (now - lastTiltAction < 1200) return;
-
-      // beta : inclinaison avant/arrière. Selon le téléphone, ça peut varier.
-      const beta = event.beta;
-
-      if (beta === null) return;
-
-      if (beta < -35) {
-        lastTiltAction = now;
-        handleAction("good");
-      }
-
-      if (beta > 55) {
-        lastTiltAction = now;
-        handleAction("bad");
-      }
-    }
-
-    // Contrôles tactiles : swipe droite/gauche.
+    // Contrôles tactiles de secours : swipe droite/gauche.
     touchZone.addEventListener("touchstart", (e) => {
       const t = e.changedTouches[0];
       touchStartX = t.clientX;
@@ -989,16 +1282,25 @@
     correctBtn.addEventListener("click", () => handleAction("good"));
     passBtn.addEventListener("click", () => handleAction("bad"));
     stopBtn.addEventListener("click", endGame);
-    tiltBtn.addEventListener("click", enableTilt);
+    calibrateBtn.addEventListener("click", calibrateTilt);
 
-    againBtn.addEventListener("click", () => startCountdown());
-    homeBtn.addEventListener("click", () => showScreen("home"));
+    againBtn.addEventListener("click", async () => {
+      await requestLandscapeAndFullscreen();
+      await enableTiltAuto();
+      startCountdown();
+    });
+
+    homeBtn.addEventListener("click", async () => {
+      document.body.classList.remove("playing");
+      await exitLandscapeIfPossible();
+      showScreen("home");
+    });
 
     // Raccourcis PC pour tester dans le navigateur.
     window.addEventListener("keydown", (e) => {
       if (!gameActive) return;
-      if (e.key === "ArrowRight") handleAction("good");
-      if (e.key === "ArrowLeft") handleAction("bad");
+      if (e.key === "ArrowUp" || e.key === "ArrowRight") handleAction("good");
+      if (e.key === "ArrowDown" || e.key === "ArrowLeft") handleAction("bad");
       if (e.key === "Escape") endGame();
     });
 
